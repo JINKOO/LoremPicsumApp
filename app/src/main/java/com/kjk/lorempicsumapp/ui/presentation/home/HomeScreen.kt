@@ -17,6 +17,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = viewModel()
 ) {
+    // Loading > fetch > Loading Complete
     LaunchedEffect(key1 = Unit) {
         homeViewModel.homeUiState.collectLatest { event ->
             Timber.d("HomeUiState : ${event}")
@@ -25,8 +26,9 @@ fun HomeScreen(
                     homeViewModel.onEvent(HomeEvent.FetchPictures)
                 }
 
-
-
+                is HomeUiState.FetchPicturesComplete -> {
+                    // TODO hide loading progress
+                }
             }
         }
     }
