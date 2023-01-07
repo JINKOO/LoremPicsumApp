@@ -5,7 +5,7 @@ package com.kjk.lorempicsumapp.ui.presentation.home
  */
 sealed interface HomeUiState {
     object Idle: HomeUiState
-    object FetchPicturesComplete : HomeUiState
+    object FetchPicturesComplete: HomeUiState
 }
 
 /**
