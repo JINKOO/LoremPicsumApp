@@ -1,10 +1,14 @@
 package com.kjk.lorempicsumapp.domain.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class LoremPictureVO(
-    val id: String,
-    val author: String,
-    val width: String,
-    val height: String,
-    val url: String,
-    val downloadUrl: String
-)
+    var id: String = "",
+    var author: String = "",
+    var width: String = "",
+    var height: String = "",
+    var url: String = "",
+    var downloadUrl: String = ""
+): Parcelable
