@@ -71,10 +71,13 @@ fun HomeScreen(
 
 @Composable
 fun LoremPicsumList(
+    modifier: Modifier = Modifier,
     pictureList: List<LoremPictureVO>,
     navigateToDetail: (LoremPictureVO) -> Unit
 ) {
     LazyVerticalGrid(
+        modifier = Modifier
+            .padding(8.dp),
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -97,13 +100,12 @@ fun LoremPictureItem(
 ) {
     Box(
         modifier = Modifier
-            .padding(8.dp)
             .clickable {
                 Timber.d("click Event :: ${loremPicture}")
                 navigateToDetail(loremPicture)
             }
     ) {
-        Card() {
+        Card {
             Column {
                 GlideImage(
                     model = loremPicture.downloadUrl,
