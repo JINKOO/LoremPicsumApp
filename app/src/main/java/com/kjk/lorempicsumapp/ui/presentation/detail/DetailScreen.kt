@@ -2,18 +2,23 @@ package com.kjk.lorempicsumapp.ui.presentation.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kjk.lorempicsumapp.R
+import com.kjk.lorempicsumapp.domain.entity.LoremPictureVO
+import com.kjk.lorempicsumapp.ui.presentation.home.LoremPictureItem
 
 // TODO 실제 data로 변경해야함
 @Composable
 fun DetailScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loremPicture: LoremPictureVO
 ) {
     Column(
         modifier = Modifier
@@ -21,45 +26,39 @@ fun DetailScreen(
             .fillMaxSize()
     ) {
 
-        Image(
-            modifier = Modifier
-                .height(350.dp)
-                .fillMaxWidth(),
-            painter = painterResource(
-                id = R.drawable.ic_launcher_foreground
-            ),
-            contentDescription = null
-        )
-        PictureInfo()
+        LoremPictureItem(loremPicture = loremPicture, navigateToDetail = {})
+        Spacer(modifier = Modifier.height(32.dp))
+        PictureInfo(loremPicture)
     }
 }
 
 @Composable
-private fun PictureInfo() {
+private fun PictureInfo(
+    loremPicture: LoremPictureVO
+) {
     Column {
-        // TODO 하드코딩 된 값 변경
-        Text(
-            text = "ID : "
-        )
+        LoremPictureData(attribute = "ID", data = loremPicture.id)
+        LoremPictureData(attribute = "Author", data = loremPicture.author)
+        LoremPictureData(attribute = "width", data = loremPicture.width)
+        LoremPictureData(attribute = "height", data = loremPicture.height)
+        LoremPictureData(attribute = "downlod_url", data = loremPicture.downloadUrl)
+    }
+}
 
+@Composable
+private fun LoremPictureData(
+    attribute: String,
+    data : String
+) {
+    Row {
         Text(
-            text = "Author : "
+            text = attribute,
+            style = MaterialTheme.typography.subtitle2
         )
-
+        Spacer(modifier = Modifier.width(32.dp))
         Text(
-            text = "width : "
-        )
-
-        Text(
-            text = "height : "
-        )
-
-        Text(
-            text = "url : "
-        )
-
-        Text(
-            text = "downlaod_url : "
+            text = data,
+            style = MaterialTheme.typography.subtitle2
         )
     }
 }
@@ -67,5 +66,7 @@ private fun PictureInfo() {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    DetailScreen()
+    DetailScreen(
+        loremPicture = LoremPictureVO()
+    )
 }
