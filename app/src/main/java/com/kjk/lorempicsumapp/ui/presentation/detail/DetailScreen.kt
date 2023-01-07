@@ -52,13 +52,14 @@ private fun LoremPictureData(
 ) {
     Row {
         Text(
+            modifier = Modifier.width(45.dp),
             text = attribute,
             style = MaterialTheme.typography.subtitle2
         )
         Spacer(modifier = Modifier.width(32.dp))
         Text(
             text = data,
-            style = MaterialTheme.typography.subtitle2
+            style = MaterialTheme.typography.body2
         )
     }
 }
