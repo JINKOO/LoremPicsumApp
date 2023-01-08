@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureVO
+import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
 
 class DetailActivity : ComponentActivity() {
 
@@ -16,7 +16,7 @@ class DetailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DetailScreen(
-                loremPicture = viewModel.detailData ?: LoremPictureVO()
+                loremPicture = viewModel.detailData ?: LoremPictureUiModel()
             )
         }
     }
@@ -24,7 +24,7 @@ class DetailActivity : ComponentActivity() {
     companion object {
         fun getDetailPicture(
             context: Context,
-            loremPictureVO: LoremPictureVO
+            loremPictureVO: LoremPictureUiModel
         ): Intent {
             return Intent(context, DetailActivity::class.java).apply {
                 putExtra(DetailViewModel.PICTURE_DETAIL_DATA, loremPictureVO)

@@ -1,6 +1,5 @@
 package com.kjk.lorempicsumapp.ui.presentation.home
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureVO
+import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
 import com.kjk.lorempicsumapp.ui.presentation.detail.DetailActivity
 import com.kjk.lorempicsumapp.ui.theme.LoremPicsumAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +34,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToDetail(loremPictureVO: LoremPictureVO) {
+    private fun navigateToDetail(loremPictureVO: LoremPictureUiModel) {
         val intent = DetailActivity.getDetailPicture(
             context = this,
             loremPictureVO = loremPictureVO
