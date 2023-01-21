@@ -1,7 +1,8 @@
 package com.kjk.lorempicsumapp.domain.repository
 
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
+import com.kjk.lorempicsumapp.domain.entity.LoremPicture
 
 interface LoremPictureRepository {
-    suspend fun getLoremPicureList(): Result<List<LoremPictureUiModel>>
+    suspend fun getLoremPictureList(): List<LoremPicture>
+    suspend fun getLoremPictureDetail(loremPictureId: String): LoremPicture
 }

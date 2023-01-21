@@ -2,6 +2,9 @@ package com.kjk.lorempicsumapp.data.network.entity
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ *  Data Layer에서 사용하는 Model
+ */
 data class LoremPictureRS(
     val id: String,
     val author: String,

@@ -11,62 +11,58 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kjk.lorempicsumapp.ui.theme.LoremPicsumAppTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
-import com.kjk.lorempicsumapp.ui.presentation.common.LoremPictureImageWrapper
+import com.kjk.lorempicsumapp.domain.entity.LoremPicture
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel = viewModel(),
-    navigateToDetail: (LoremPictureUiModel) -> Unit
+    viewModel: LoremPictureViewModel = hiltViewModel(),
+    navigateToDetail: () -> Unit = {}
 ) {
-    
-    var isFetchCompleted by rememberSaveable {
-        mutableStateOf(false)
-    }
-    
+
+    val loremPictureList = viewModel.loremPictureList.collectAsState()
+
     // Loading > fetch > Loading Complete
     LaunchedEffect(key1 = Unit) {
-        homeViewModel.homeUiState.collectLatest { event ->
+        viewModel.homeUiState.collectLatest { event ->
             Timber.d("HomeUiState : ${event}")
-            when(event) {
+            when (event) {
                 is HomeUiState.Idle -> {
-                    homeViewModel.onEvent(HomeEvent.FetchPictures)
+                    viewModel.onEvent(HomeEvent.FetchPictures)
                 }
 
                 is HomeUiState.FetchPicturesComplete -> {
-                    isFetchCompleted = true
+                    // 리스트를 화면에 그려줘야 한다.
                 }
             }
         }
     }
-    
-    if (isFetchCompleted) {
-        LoremPicsumList(
-            pictureList = homeViewModel.loremPictureList,
-            navigateToDetail = navigateToDetail
+
+    if (loremPictureList.value.isNotEmpty()) {
+        LoremPictureList(
+            pictureList = loremPictureList.value,
+            viewModel = viewModel,
+            navigateToDetail = navigateToDetail,
         )
+    } else {
+        Timber.d("list is empty")
     }
 }
 
 @Composable
-fun LoremPicsumList(
+fun LoremPictureList(
     modifier: Modifier = Modifier,
-    pictureList: List<LoremPictureUiModel>,
-    navigateToDetail: (LoremPictureUiModel) -> Unit
+    pictureList: List<LoremPicture>,
+    viewModel: LoremPictureViewModel = hiltViewModel(),
+    navigateToDetail: () -> Unit = {}
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -76,9 +72,10 @@ fun LoremPicsumList(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(pictureList) { loremPicture ->
-            LoremPictureImageWrapper(
+            LoremPictureItem(
                 loremPicture = loremPicture,
-                onNavigateToDetail = navigateToDetail
+                viewModel = viewModel,
+                navigateToDetail = navigateToDetail
             )
         }
     }
@@ -88,14 +85,16 @@ fun LoremPicsumList(
 @Composable
 fun LoremPictureItem(
     modifier: Modifier = Modifier,
-    loremPicture: LoremPictureUiModel,
-    navigateToDetail:(LoremPictureUiModel) -> Unit
+    loremPicture:LoremPicture,
+    viewModel: LoremPictureViewModel, // TODO 여기 부분에서 hiltViewModel()을 사용하면, 왜 서로 다른 instance가 생성되는 것일까?
+    navigateToDetail: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .clickable {
-                Timber.d("click Event :: ${loremPicture}")
-                navigateToDetail(loremPicture)
+                Timber.d("click Event :: ${loremPicture.id}")
+                viewModel.setLoremPictureId(loremPicture.id)
+                navigateToDetail()
             }
     ) {
         Card {
@@ -106,13 +105,5 @@ fun LoremPictureItem(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    LoremPicsumAppTheme {
-        HomeScreen(navigateToDetail = {})
     }
 }
