@@ -12,8 +12,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +50,8 @@ fun DetailScreen(
                 contentDescription = null
             )
         }
+        Spacer(modifier = Modifier.height(32.dp))
+        PictureInfo(loremPicture.value)
         Spacer(modifier = Modifier.height(16.dp))
         TwoButtons(
             onLeftIconClicked = {
@@ -59,15 +63,6 @@ fun DetailScreen(
                 pictureId = viewModel.getLoremPictureId()
             }
         )
-        Spacer(modifier = Modifier.height(32.dp))
-        PictureInfo(loremPicture.value)
-
-        Spacer(modifier = Modifier.height(32.dp))
-        Row(
-            modifier = Modifier
-        ) {
-
-        }
     }
 }
 
@@ -79,7 +74,9 @@ fun TwoButtons(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             horizontalArrangement = Arrangement.Start
@@ -94,7 +91,8 @@ fun TwoButtons(
                 )
             }
         }
-
+        // 양쪽 정렬 할 수 있는 방법??
+        Spacer(modifier = Modifier.width(250.dp))
         Row(
             horizontalArrangement = Arrangement.End
         ) {
@@ -115,32 +113,48 @@ fun TwoButtons(
 private fun PictureInfo(
     loremPicture: LoremPicture
 ) {
-    Column {
-        LoremPictureData(attribute = "ID", data = loremPicture.id)
-        LoremPictureData(attribute = "Author", data = loremPicture.author)
-        LoremPictureData(attribute = "width", data = loremPicture.width)
-        LoremPictureData(attribute = "height", data = loremPicture.height)
-        LoremPictureData(attribute = "downlod_url", data = loremPicture.downloadUrl)
+    Row() {
+        // 정보 title label 영역
+        Column() {
+            LoremPictureLabel(label = "ID")
+            LoremPictureLabel(label = "Author")
+            LoremPictureLabel(label = "Width")
+            LoremPictureLabel(label = "Height")
+            LoremPictureLabel(label = "Download_url")
+        }
+        Spacer(modifier = Modifier.width(32.dp))
+        Column() {
+            LoremPictureData(value = loremPicture.id)
+            LoremPictureData(value = loremPicture.author)
+            LoremPictureData(value = loremPicture.width)
+            LoremPictureData(value = loremPicture.height)
+            LoremPictureData(value = loremPicture.downloadUrl)
+        }
     }
 }
 
 @Composable
-private fun LoremPictureData(
-    attribute: String,
-    data: String
+private fun LoremPictureLabel(
+    modifier: Modifier = Modifier,
+    label: String
 ) {
-    Row {
-        Text(
-            modifier = Modifier.width(45.dp),
-            text = attribute,
-            style = MaterialTheme.typography.subtitle2
-        )
-        Spacer(modifier = Modifier.width(32.dp))
-        Text(
-            text = data,
-            style = MaterialTheme.typography.body2
-        )
-    }
+    Text(
+        text = label,
+        style = MaterialTheme.typography.subtitle2,
+        textAlign = TextAlign.End
+    )
+}
+
+@Composable
+private fun LoremPictureData(
+    modifier: Modifier = Modifier,
+    value: String,
+) {
+    Text(
+        text = value,
+        style = MaterialTheme.typography.body2,
+        textAlign = TextAlign.Start
+    )
 }
 
 @Preview(showBackground = true)
