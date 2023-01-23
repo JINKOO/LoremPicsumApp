@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -85,7 +86,7 @@ fun LoremPictureList(
 @Composable
 fun LoremPictureItem(
     modifier: Modifier = Modifier,
-    loremPicture:LoremPicture,
+    loremPicture: LoremPicture,
     viewModel: LoremPictureViewModel, // TODO 여기 부분에서 hiltViewModel()을 사용하면, 왜 서로 다른 instance가 생성되는 것일까?
     navigateToDetail: () -> Unit
 ) {
@@ -101,6 +102,7 @@ fun LoremPictureItem(
             Column {
                 GlideImage(
                     model = loremPicture.downloadUrl,
+                    contentScale = ContentScale.Fit,
                     contentDescription = null
                 )
             }
