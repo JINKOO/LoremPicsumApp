@@ -3,8 +3,6 @@ package com.kjk.lorempicsumapp.data.datasource.remote
 import com.kjk.lorempicsumapp.data.di.LoremPictureApi
 import com.kjk.lorempicsumapp.data.network.api.LoremApi
 import com.kjk.lorempicsumapp.data.network.entity.LoremPictureRS
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureVO
-import timber.log.Timber
 import javax.inject.Inject
 
 class LoremPictureRemoteSourceImpl @Inject constructor(

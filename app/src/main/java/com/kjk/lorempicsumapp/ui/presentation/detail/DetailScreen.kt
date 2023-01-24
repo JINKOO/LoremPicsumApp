@@ -1,24 +1,20 @@
 package com.kjk.lorempicsumapp.ui.presentation.detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.kjk.lorempicsumapp.R
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureVO
-import com.kjk.lorempicsumapp.ui.presentation.home.LoremPictureItem
+import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
+import com.kjk.lorempicsumapp.ui.presentation.common.LoremPictureImageWrapper
 
 // TODO 실제 data로 변경해야함
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    loremPicture: LoremPictureVO
+    loremPicture: LoremPictureUiModel
 ) {
     Column(
         modifier = Modifier
@@ -26,7 +22,7 @@ fun DetailScreen(
             .fillMaxSize()
     ) {
 
-        LoremPictureItem(loremPicture = loremPicture, navigateToDetail = {})
+        LoremPictureImageWrapper(loremPicture = loremPicture)
         Spacer(modifier = Modifier.height(32.dp))
         PictureInfo(loremPicture)
     }
@@ -34,7 +30,7 @@ fun DetailScreen(
 
 @Composable
 private fun PictureInfo(
-    loremPicture: LoremPictureVO
+    loremPicture: LoremPictureUiModel
 ) {
     Column {
         LoremPictureData(attribute = "ID", data = loremPicture.id)
@@ -68,6 +64,6 @@ private fun LoremPictureData(
 @Composable
 fun DetailScreenPreview() {
     DetailScreen(
-        loremPicture = LoremPictureVO()
+        loremPicture = LoremPictureUiModel()
     )
 }

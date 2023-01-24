@@ -2,14 +2,11 @@ package com.kjk.lorempicsumapp.ui.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kjk.lorempicsumapp.data.datasource.remote.LoremPictureRemoteSource
-import com.kjk.lorempicsumapp.data.network.entity.LoremPictureRS
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureVO
+import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
 import com.kjk.lorempicsumapp.domain.usecase.LoremPictureUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
@@ -25,7 +22,7 @@ class HomeViewModel @Inject constructor(
     private val _homeUiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState.Idle)
     val homeUiState = _homeUiState.asStateFlow()
 
-    var loremPictureList: List<LoremPictureVO> = emptyList()
+    var loremPictureList: List<LoremPictureUiModel> = emptyList()
 
     fun onEvent(homeEvent: HomeEvent) {
         Timber.d("onEvent() : ${homeEvent}")

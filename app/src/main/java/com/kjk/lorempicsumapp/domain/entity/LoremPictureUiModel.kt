@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class LoremPictureVO(
+data class LoremPictureUiModel(
     var id: String = "",
     var author: String = "",
     var width: String = "",
