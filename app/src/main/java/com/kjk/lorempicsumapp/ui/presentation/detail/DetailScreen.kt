@@ -1,36 +1,56 @@
 package com.kjk.lorempicsumapp.ui.presentation.detail
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
-import com.kjk.lorempicsumapp.ui.presentation.common.LoremPictureImageWrapper
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.kjk.lorempicsumapp.domain.entity.LoremPicture
+import com.kjk.lorempicsumapp.ui.presentation.home.LoremPictureViewModel
+import timber.log.Timber
 
-// TODO 실제 data로 변경해야함
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    loremPicture: LoremPictureUiModel
+    viewModel: LoremPictureViewModel = hiltViewModel()
 ) {
+
+    val pictureId = viewModel.getLoremPictureId()
+    Timber.d("pictureId ::  ${pictureId}")
+    viewModel.fetchPicture(pictureId)
+
+    val loremPicture = viewModel.loremPicture.collectAsState()
+
     Column(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxSize()
     ) {
-
-        LoremPictureImageWrapper(loremPicture = loremPicture)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(350.dp)
+        ) {
+            GlideImage(
+                model = loremPicture.value.downloadUrl,
+                contentDescription = null
+            )
+        }
         Spacer(modifier = Modifier.height(32.dp))
-        PictureInfo(loremPicture)
+        PictureInfo(loremPicture.value)
     }
 }
 
 @Composable
 private fun PictureInfo(
-    loremPicture: LoremPictureUiModel
+    loremPicture: LoremPicture
 ) {
     Column {
         LoremPictureData(attribute = "ID", data = loremPicture.id)
@@ -58,12 +78,4 @@ private fun LoremPictureData(
             style = MaterialTheme.typography.body2
         )
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun DetailScreenPreview() {
-    DetailScreen(
-        loremPicture = LoremPictureUiModel()
-    )
 }

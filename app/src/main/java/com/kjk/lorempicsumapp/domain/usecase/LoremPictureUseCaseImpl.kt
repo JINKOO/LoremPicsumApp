@@ -1,6 +1,6 @@
 package com.kjk.lorempicsumapp.domain.usecase
 
-import com.kjk.lorempicsumapp.domain.entity.LoremPictureUiModel
+import com.kjk.lorempicsumapp.domain.entity.LoremPicture
 import com.kjk.lorempicsumapp.domain.repository.LoremPictureRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,7 +10,13 @@ class LoremPictureUseCaseImpl @Inject constructor(
     private val loremPictureRepository: LoremPictureRepository
 ) : LoremPictureUseCase {
 
-    override suspend fun getLoremPictureList(): Flow<Result<List<LoremPictureUiModel>>> = flow {
-        emit(loremPictureRepository.getLoremPicureList())
+    override fun getLoremPictureList(): Flow<List<LoremPicture>> = flow {
+        emit(loremPictureRepository.getLoremPictureList())
+    }
+
+    override fun getLoremPictureDetail(
+        loremPictureId: String
+    ): Flow<LoremPicture> = flow {
+        emit(loremPictureRepository.getLoremPictureDetail(loremPictureId))
     }
 }

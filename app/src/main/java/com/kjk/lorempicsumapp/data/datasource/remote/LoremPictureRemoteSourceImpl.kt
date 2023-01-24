@@ -9,8 +9,13 @@ class LoremPictureRemoteSourceImpl @Inject constructor(
     @LoremPictureApi private val loremApi: LoremApi
 ) : LoremPictureRemoteSource {
 
-    // TODO FLOW로 변경 한다.
     override suspend fun getLoremPictureList(): Result<List<LoremPictureRS>> = runCatching {
         loremApi.getLoremPictureList()
+    }
+
+    override suspend fun getLoremPictureDetail(
+        loremPictureId: String
+    ): Result<LoremPictureRS> = runCatching {
+        loremApi.getLoremPictureDetail(loremPictureId)
     }
 }
