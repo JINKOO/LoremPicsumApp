@@ -31,9 +31,9 @@ class LoremPictureRepositoryImpl @Inject constructor(
             )
 
     override suspend fun getLoremPictureDetail(
-        lorePictureId: String
+        loremPictureId: String
     ): LoremPicture =
-        loremPictureRemoteSource.getLoremPictureDetail(lorePictureId)
+        loremPictureRemoteSource.getLoremPictureDetail(loremPictureId)
             .fold(
                 onSuccess = { loremPictureRS ->
                     LoremPicture(

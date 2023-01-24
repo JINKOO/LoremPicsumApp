@@ -22,7 +22,8 @@ class LoremPictureViewModel @Inject constructor(
     private val _homeUiState: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState.Idle)
     val homeUiState = _homeUiState.asStateFlow()
 
-    private val _loremPictureList: MutableStateFlow<List<LoremPicture>> = MutableStateFlow(emptyList())
+    private val _loremPictureList: MutableStateFlow<List<LoremPicture>> =
+        MutableStateFlow(emptyList())
     val loremPictureList = _loremPictureList.asStateFlow()
 
     private val _loremPicture: MutableStateFlow<LoremPicture> = MutableStateFlow(LoremPicture())
@@ -32,7 +33,7 @@ class LoremPictureViewModel @Inject constructor(
 
     fun onEvent(homeEvent: HomeEvent) {
         Timber.d("onEvent() : ${homeEvent}")
-        when(homeEvent) {
+        when (homeEvent) {
             is HomeEvent.FetchPictures -> {
                 fetchPictureList()
             }
@@ -54,17 +55,17 @@ class LoremPictureViewModel @Inject constructor(
     fun fetchPicture(loremPictureId: String) {
         viewModelScope.launch {
             Timber.d("fetchPicture :: ${Thread.currentThread().name}")
-            loremPictureUseCase.getLoremPictureDetail(loremPictureId).collectLatest { pictureDetail ->
-                Timber.d("PictureDetail :: ${pictureDetail}")
-                _loremPicture.update {
-                    pictureDetail
+            loremPictureUseCase.getLoremPictureDetail(loremPictureId)
+                .collectLatest { pictureDetail ->
+                    Timber.d("PictureDetail :: ${pictureDetail}")
+                    _loremPicture.update {
+                        pictureDetail
+                    }
                 }
-            }
         }
     }
 
     fun setLoremPictureId(pictureId: String) {
-        Timber.d("setPictureId :: ${pictureId}")
         _pictureId = pictureId
         Timber.d("setPictureId :: ${_pictureId}")
     }
@@ -72,5 +73,30 @@ class LoremPictureViewModel @Inject constructor(
     fun getLoremPictureId(): String {
         Timber.d("getLoremPictureId ${_pictureId}")
         return _pictureId
+    }
+
+    fun setPreviousPictureId() {
+        val currentPictureId = _pictureId.toInt().run {
+            this.minus(1)
+        }
+        if (!isValidToShowPictureDetail(currentPictureId)) { // TODO index가 처음이라면 이전으로 넘어가기 없음.
+            return
+        }
+        Timber.d("currentPictureId :: $currentPictureId")
+        setLoremPictureId(currentPictureId.toString())
+    }
+
+    fun setNextPictureId() {
+        val currentPictureId = _pictureId.toInt().run {
+            this.plus(1)
+        }
+        if (!isValidToShowPictureDetail(currentPictureId)) {
+            return
+        }
+        setLoremPictureId(currentPictureId.toString())
+    }
+
+    private fun isValidToShowPictureDetail(pictureId: Int): Boolean {
+        return (pictureId >= 0 && pictureId <= loremPictureList.value.lastIndex)
     }
 }
