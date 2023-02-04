@@ -3,58 +3,92 @@ package com.kjk.lorempicsumapp.ui.presentation.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoremPictureViewModel = hiltViewModel(),
-    navigateToDetail: () -> Unit = {}
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigateToDetail: () -> Unit
 ) {
+    // TODO 이벤트 전달 방식이 아닌, uiEvent를 oberve해서 recomposition이 일어아도록 변경
+    val uiEvent by viewModel.homeUiState.collectAsState()
+    Timber.d("uiEvent :: ${uiEvent}")
 
-    val loremPictureList = viewModel.loremPictureList.collectAsState()
+    // TODO 0번 :: ListUpdate 방식 변경
+    val pictureList = uiEvent.pictureList
 
-    // Loading > fetch > Loading Complete
-    LaunchedEffect(key1 = Unit) {
-        viewModel.homeUiState.collectLatest { event ->
-            Timber.d("HomeUiState : ${event}")
-            when (event) {
-                is HomeUiState.Idle -> {
-                    viewModel.onEvent(HomeEvent.FetchPictures)
-                }
-
-                is HomeUiState.FetchPicturesComplete -> {
-                    // 리스트를 화면에 그려줘야 한다.
-                }
+    Column {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth(),
+            onClick = {
+                viewModel.fetchPictureList()
             }
+        ) {
+            Text(text = stringResource(R.string.fetch_list_btn_label))
+        }
+
+        if (pictureList.isNotEmpty()) {
+            LoremPictureList(
+                pictureList = pictureList,
+                navigateToDetail = navigateToDetail,
+            )
+        } else {
+            CommonErrorText()
         }
     }
+}
 
-    if (loremPictureList.value.isNotEmpty()) {
-        LoremPictureList(
-            pictureList = loremPictureList.value,
-            viewModel = viewModel,
-            navigateToDetail = navigateToDetail,
-        )
-    } else {
-        Timber.d("list is empty")
+@Composable
+fun CommonProgressBar(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun CommonErrorText(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = stringResource(R.string.empty_picture_list_message))
     }
 }
 
@@ -62,48 +96,47 @@ fun HomeScreen(
 fun LoremPictureList(
     modifier: Modifier = Modifier,
     pictureList: List<LoremPicture>,
-    viewModel: LoremPictureViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetail: () -> Unit = {}
 ) {
     LazyVerticalGrid(
-        modifier = Modifier
+        modifier = modifier
             .padding(8.dp),
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(pictureList) { loremPicture ->
+        items(pictureList, key = { picture -> picture.id }) { loremPicture ->
             LoremPictureItem(
                 loremPicture = loremPicture,
-                viewModel = viewModel,
                 navigateToDetail = navigateToDetail
             )
         }
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LoremPictureItem(
     modifier: Modifier = Modifier,
     loremPicture: LoremPicture,
-    viewModel: LoremPictureViewModel, // TODO 여기 부분에서 hiltViewModel()을 사용하면, 왜 서로 다른 instance가 생성되는 것일까?
     navigateToDetail: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .size(200.dp)
-            .clickable {
-                viewModel.setLoremPictureId(loremPicture.id)
-                navigateToDetail()
-            }
+            .clickable { navigateToDetail() },
+        elevation = 4.dp
     ) {
-        Column {
-            GlideImage(
-                model = loremPicture.downloadUrl,
-                contentScale = ContentScale.Crop,
-                contentDescription = null
-            )
-        }
+        // TODO Coil라이브러리로 변경 완료
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(loremPicture.downloadUrl)
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(id = R.drawable.loading_img),
+            error = painterResource(id = R.drawable.ic_broken_image),
+            contentScale = ContentScale.Crop,
+            contentDescription = null,
+        )
     }
 }

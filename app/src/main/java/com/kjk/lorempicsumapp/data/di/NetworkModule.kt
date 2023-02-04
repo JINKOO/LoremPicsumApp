@@ -11,12 +11,10 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Qualifier
-@MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
 annotation class LoremPictureApi
 
 @Qualifier
-@MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
 annotation class LoremPictureRetrofit
 
@@ -24,12 +22,16 @@ annotation class LoremPictureRetrofit
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
+    companion object {
+        private const val BASE_URL = "https://picsum.photos"
+    }
+
     @LoremPictureRetrofit
     @Provides
     @Singleton
     fun provideLoremPictureService(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://picsum.photos")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -15,39 +15,27 @@ class LoremPictureRepositoryImpl @Inject constructor(
             .fold(
                 onSuccess = {
                     it.map { loremPictureApiModel ->
-                        LoremPicture(
-                            id = loremPictureApiModel.id,
-                            author = loremPictureApiModel.author,
-                            width = loremPictureApiModel.width,
-                            height = loremPictureApiModel.height,
-                            url = loremPictureApiModel.url,
-                            downloadUrl = loremPictureApiModel.downloadUrl
-                        )
+                        LoremPicture(loremPictureApiModel)
                     }
                 },
                 onFailure = {
-                    throw it
+                    Timber.w("ERROR :: ${it.message}")
+                    emptyList()
                 }
             )
 
     override suspend fun getLoremPictureDetail(
         loremPictureId: String
-    ): LoremPicture =
-        loremPictureRemoteSource.getLoremPictureDetail(loremPictureId)
+    ): LoremPicture? {
+        return loremPictureRemoteSource.getLoremPictureDetail(loremPictureId)
             .fold(
-                onSuccess = { loremPictureRS ->
-                    LoremPicture(
-                        id = loremPictureRS.id,
-                        author = loremPictureRS.author,
-                        width = loremPictureRS.width,
-                        height = loremPictureRS.height,
-                        url = loremPictureRS.url,
-                        downloadUrl = loremPictureRS.downloadUrl
-                    )
+                onSuccess = { loremPictureApiModel ->
+                    LoremPicture(loremPictureApiModel)
                 },
                 onFailure = {
-                    Timber.d("Failuer :: ${it}")
-                    throw it
+                    Timber.w("ERROR :: ${it.message}")
+                    null
                 }
             )
+    }
 }

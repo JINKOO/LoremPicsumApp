@@ -5,4 +5,6 @@
     <string name="back_button">Back</string>
     <string name="home">Home</string>
     <string name="detail">Detail</string>
+    <string name="empty_picture_list_message">List가 비어 있습니다</string>
+    <string name="fetch_list_btn_label">Fetch</string>
 </resources>

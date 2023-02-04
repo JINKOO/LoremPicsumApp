@@ -17,6 +17,7 @@ class LoremPictureUseCaseImpl @Inject constructor(
     override fun getLoremPictureDetail(
         loremPictureId: String
     ): Flow<LoremPicture> = flow {
-        emit(loremPictureRepository.getLoremPictureDetail(loremPictureId))
+        // TODO 질문 :: null 처리는 usecase에서 해야하나, 아니면, repository에서 해야하나?
+        loremPictureRepository.getLoremPictureDetail(loremPictureId)?.let { emit(it) }
     }
 }

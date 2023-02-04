@@ -8,12 +8,13 @@ plugins {
 
 android {
     namespace 'com.kjk.lorempicsumapp'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
+        manifestPlaceholders = [hostName: "com.kjk.lorempicsumapp"]
         applicationId "com.kjk.lorempicsumapp"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -24,11 +25,33 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Build Variant
+    flavorDimensions "version"
+    productFlavors {
+        dev {
+            dimension "version"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        prod {
+            dimension "version"
+            applicationIdSuffix ".prod"
+            versionNameSuffix "-prod"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -88,4 +111,7 @@ dependencies {
 
     // compose viewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+
+    // coil
+    implementation "io.coil-kt:coil-compose:2.2.2"
 }

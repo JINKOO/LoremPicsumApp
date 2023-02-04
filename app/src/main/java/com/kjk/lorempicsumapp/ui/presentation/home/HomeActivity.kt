@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.ui.presentation.LoremPictureScreen
 import com.kjk.lorempicsumapp.ui.presentation.detail.DetailScreen
+import com.kjk.lorempicsumapp.ui.presentation.detail.DetailViewModel
 import com.kjk.lorempicsumapp.ui.theme.LoremPicsumAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,7 +37,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LoremPicsumAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -81,8 +81,7 @@ fun LoremPictureAppBar(
 
 @Composable
 fun LoremPictureApp(
-    modifier: Modifier = Modifier,
-    viewModel: LoremPictureViewModel = hiltViewModel()
+    modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -111,6 +110,7 @@ fun LoremPictureApp(
             composable(
                 route = LoremPictureScreen.Home.name
             ) {
+                val viewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
                     viewModel = viewModel,
                     navigateToDetail = {
@@ -122,6 +122,7 @@ fun LoremPictureApp(
             composable(
                 route = LoremPictureScreen.Detail.name
             ) {
+                val viewModel = hiltViewModel<DetailViewModel>()
                 DetailScreen(
                     viewModel = viewModel
                 )

@@ -1,6 +1,6 @@
 package com.kjk.lorempicsumapp.data.network.api
 
-import com.kjk.lorempicsumapp.data.network.entity.LoremPictureRS
+import com.kjk.lorempicsumapp.data.network.entity.LoremPictureApiModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -9,7 +9,7 @@ interface LoremApi {
      *  전체 리스트를 가져오는 API
      */
     @GET("/v2/list")
-    suspend fun getLoremPictureList(): List<LoremPictureRS>
+    suspend fun getLoremPictureList(): List<LoremPictureApiModel>
 
     /**
      *  id값을 기준으로 하나의 Picture 정보를 가져오는 API
@@ -17,5 +17,5 @@ interface LoremApi {
     @GET("/id/{id}/info")
     suspend fun getLoremPictureDetail(
         @Path("id") id: String
-    ): LoremPictureRS
+    ): LoremPictureApiModel
 }

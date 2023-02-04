@@ -1,69 +1,28 @@
 package com.kjk.lorempicsumapp.ui.presentation.detail
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
-import com.kjk.lorempicsumapp.ui.presentation.home.LoremPictureViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoremPictureViewModel = hiltViewModel()
+    viewModel: DetailViewModel
 ) {
-
-    var pictureId by rememberSaveable {
-        mutableStateOf(viewModel.getLoremPictureId())
-    }
-
-    viewModel.fetchPicture(pictureId)
-    val loremPicture = viewModel.loremPicture.collectAsState()
-
-    Column(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxSize()
-    ) {
-        Card {
-            GlideImage(
-                model = loremPicture.value.downloadUrl,
-                contentDescription = null
-            )
-        }
-        Spacer(modifier = Modifier.height(32.dp))
-        PictureInfo(loremPicture.value)
-        Spacer(modifier = Modifier.height(16.dp))
-        TwoButtons(
-            onLeftIconClicked = {
-                viewModel.setPreviousPictureId()
-                pictureId = viewModel.getLoremPictureId()
-            },
-            onRightIconClicked = {
-                viewModel.setNextPictureId()
-                pictureId = viewModel.getLoremPictureId()
-            }
-        )
-    }
+    
 }
 
 @Composable
@@ -109,6 +68,7 @@ fun TwoButtons(
     }
 }
 
+// TODO 0번 detail 화면 update
 @Composable
 private fun PictureInfo(
     loremPicture: LoremPicture
