@@ -1,6 +1,11 @@
 package com.kjk.lorempicsumapp.ui.presentation.detail
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -12,17 +17,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
+import timber.log.Timber
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel
+    viewModel: DetailViewModel,
+    pictureId: String
 ) {
-    
+    Timber.d("pictureId :: $pictureId")
+
 }
 
 @Composable
