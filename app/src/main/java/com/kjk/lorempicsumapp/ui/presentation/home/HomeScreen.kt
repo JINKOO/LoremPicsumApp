@@ -35,7 +35,7 @@ import timber.log.Timber
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetail: () -> Unit
+    navigateToDetail: (String) -> Unit
 ) {
     // TODO 이벤트 전달 방식이 아닌, uiEvent를 oberve해서 recomposition이 일어아도록 변경
     val uiEvent by viewModel.homeUiState.collectAsState()
@@ -97,7 +97,7 @@ fun LoremPictureList(
     modifier: Modifier = Modifier,
     pictureList: List<LoremPicture>,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetail: () -> Unit = {}
+    navigateToDetail: (String) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = modifier
@@ -109,7 +109,9 @@ fun LoremPictureList(
         items(pictureList, key = { picture -> picture.id }) { loremPicture ->
             LoremPictureItem(
                 loremPicture = loremPicture,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = {
+                    navigateToDetail(loremPicture.id)
+                }
             )
         }
     }

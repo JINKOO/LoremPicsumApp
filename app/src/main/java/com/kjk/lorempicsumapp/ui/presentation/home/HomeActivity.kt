@@ -19,12 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.kjk.lorempicsumapp.R
-import com.kjk.lorempicsumapp.ui.presentation.LoremPictureScreen
 import com.kjk.lorempicsumapp.ui.presentation.detail.DetailScreen
 import com.kjk.lorempicsumapp.ui.presentation.detail.DetailViewModel
 import com.kjk.lorempicsumapp.ui.theme.LoremPicsumAppTheme
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LoremPictureAppBar(
     modifier: Modifier = Modifier,
-    currentScreen: LoremPictureScreen,
+    currentScreen: String,
     canNavigateBack: Boolean = true,
     navigateUp: () -> Unit
 ) {
@@ -59,7 +60,7 @@ fun LoremPictureAppBar(
         modifier = modifier,
         title = {
             Text(
-                text = currentScreen.name
+                text = currentScreen
             )
         },
         navigationIcon = {
@@ -86,9 +87,9 @@ fun LoremPictureApp(
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentScreen = LoremPictureScreen.valueOf(
-        backStackEntry?.destination?.route ?: LoremPictureScreen.Home.name
-    )
+    val currentScreen = //LoremPictureScreen.valueOf(
+        backStackEntry?.destination?.route ?: "home"
+    //)
 
     Scaffold(
         topBar = {
@@ -103,28 +104,30 @@ fun LoremPictureApp(
     ) { innerPaddings ->
         NavHost(
             navController = navController,
-            startDestination = LoremPictureScreen.Home.name,
+            startDestination = "home",
             modifier = modifier.padding(innerPaddings)
         ) {
 
-            composable(
-                route = LoremPictureScreen.Home.name
-            ) {
+            composable(route = "home") {
                 val viewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
                     viewModel = viewModel,
-                    navigateToDetail = {
-                        navController.navigate(LoremPictureScreen.Detail.name)
+                    navigateToDetail = { pictureId ->
+                        navController.navigate("detail/$pictureId")
                     }
                 )
             }
 
             composable(
-                route = LoremPictureScreen.Detail.name
-            ) {
+                route = "detail/{pictureId}",
+                arguments = listOf(
+                    navArgument("pictureId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
                 val viewModel = hiltViewModel<DetailViewModel>()
                 DetailScreen(
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    pictureId = backStackEntry.arguments?.getString("pictureId") ?: ""
                 )
             }
         }
