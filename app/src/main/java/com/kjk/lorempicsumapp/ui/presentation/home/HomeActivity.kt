@@ -87,9 +87,7 @@ fun LoremPictureApp(
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentScreen = //LoremPictureScreen.valueOf(
-        backStackEntry?.destination?.route ?: "home"
-    //)
+    val currentScreen = backStackEntry?.destination?.route ?: "home"
 
     Scaffold(
         topBar = {
@@ -123,11 +121,10 @@ fun LoremPictureApp(
                 arguments = listOf(
                     navArgument("pictureId") { type = NavType.StringType }
                 )
-            ) { backStackEntry ->
+            ) {
                 val viewModel = hiltViewModel<DetailViewModel>()
                 DetailScreen(
-                    viewModel = viewModel,
-                    pictureId = backStackEntry.arguments?.getString("pictureId") ?: ""
+                    viewModel = viewModel
                 )
             }
         }
