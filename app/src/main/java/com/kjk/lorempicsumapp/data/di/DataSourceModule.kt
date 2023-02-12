@@ -1,5 +1,7 @@
 package com.kjk.lorempicsumapp.data.di
 
+import com.kjk.lorempicsumapp.data.datasource.local.LoremPictureLocalSource
+import com.kjk.lorempicsumapp.data.datasource.local.LoremPictureLocalSourceImpl
 import com.kjk.lorempicsumapp.data.datasource.remote.LoremPictureRemoteSource
 import com.kjk.lorempicsumapp.data.datasource.remote.LoremPictureRemoteSourceImpl
 import dagger.Binds
@@ -16,4 +18,10 @@ abstract class DataSourceModule {
     abstract fun bindLoremPictureRemoteSource(
         loremPictureRemoteSourceImpl: LoremPictureRemoteSourceImpl
     ): LoremPictureRemoteSource
+
+    @Binds
+    @Singleton
+    abstract fun bindLoremPictureLocalSoruce(
+        loremPictureLocalSourceImpl: LoremPictureLocalSourceImpl
+    ): LoremPictureLocalSource
 }
