@@ -5,6 +5,8 @@ import com.kjk.lorempicsumapp.data.datasource.remote.LoremPictureRemoteSource
 import com.kjk.lorempicsumapp.data.local.LoremPictureEntity
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
 import com.kjk.lorempicsumapp.domain.repository.LoremPictureRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -13,11 +15,11 @@ class LoremPictureRepositoryImpl @Inject constructor(
     private val loremPictureLocalSource: LoremPictureLocalSource
 ) : LoremPictureRepository {
 
-    // TODO Network에서 fetch후, room에 저장해야 한다.
-    override suspend fun getLoremPictureList(): List<LoremPicture> =
+    override suspend fun getLoremPictureListFromRemote(): List<LoremPicture> =
         loremPictureRemoteSource.getLoremPictureList()
             .fold(
-                onSuccess = {
+                onSuccess =
+                {
                     loremPictureLocalSource.insertAll(
                         it.map { loremPictureApiModel ->
                             LoremPictureEntity(
@@ -34,11 +36,20 @@ class LoremPictureRepositoryImpl @Inject constructor(
                         LoremPicture(loremPictureApiModel)
                     }
                 },
-                onFailure = {
+                onFailure =
+                {
                     Timber.w("ERROR :: ${it.message}")
                     emptyList()
                 }
             )
+
+    override fun getLoremPictureListFromLocal(): Flow<List<LoremPicture>> {
+        return loremPictureLocalSource.getAllPictures().map {
+            it.map { LoremPictureEntity ->
+                LoremPicture(LoremPictureEntity)
+            }
+        }
+    }
 
     override suspend fun getLoremPictureDetail(
         loremPictureId: String

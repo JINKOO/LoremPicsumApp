@@ -10,9 +10,7 @@ class LoremPictureUseCaseImpl @Inject constructor(
     private val loremPictureRepository: LoremPictureRepository
 ) : LoremPictureUseCase {
 
-    override fun getLoremPictureList(): Flow<List<LoremPicture>> = flow {
-        emit(loremPictureRepository.getLoremPictureList())
-    }
+    override fun getLoremPictureList(): Flow<List<LoremPicture>> = loremPictureRepository.getLoremPictureListFromLocal()
 
     override fun getLoremPictureDetail(
         loremPictureId: String

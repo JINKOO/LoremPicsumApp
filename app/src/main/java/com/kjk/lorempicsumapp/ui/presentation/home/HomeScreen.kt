@@ -36,11 +36,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetail: (String) -> Unit
 ) {
-    // TODO 이벤트 전달 방식이 아닌, uiEvent를 oberve해서 recomposition이 일어아도록 변경
     val uiEvent by viewModel.homeUiState.collectAsState()
-    Timber.d("uiEvent :: ${uiEvent}")
-
-    // TODO 0번 :: ListUpdate 방식 변경
     val pictureList = uiEvent.pictureList
 
     Column {
@@ -54,14 +50,10 @@ fun HomeScreen(
             Text(text = stringResource(R.string.fetch_list_btn_label))
         }
 
-        if (pictureList.isNotEmpty()) {
-            LoremPictureList(
-                pictureList = pictureList,
-                navigateToDetail = navigateToDetail,
-            )
-        } else {
-            CommonErrorText()
-        }
+        LoremPictureList(
+            pictureList = pictureList,
+            navigateToDetail = navigateToDetail
+        )
     }
 }
 
