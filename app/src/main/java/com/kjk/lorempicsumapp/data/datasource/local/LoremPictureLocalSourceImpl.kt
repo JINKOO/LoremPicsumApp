@@ -3,7 +3,6 @@ package com.kjk.lorempicsumapp.data.datasource.local
 import com.kjk.lorempicsumapp.data.local.LoremPictureEntity
 import com.kjk.lorempicsumapp.data.local.database.LoremPictureDao
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 
 class LoremPictureLocalSourceImpl @Inject constructor(
@@ -14,7 +13,9 @@ class LoremPictureLocalSourceImpl @Inject constructor(
         loremPictureDao.insertAllLoremPictures(pictureList)
     }
 
-    override fun getAllPictures(): Flow<List<LoremPictureEntity>> = loremPictureDao.getAllLoremPictures()
+    override fun getAllPictures(): Flow<List<LoremPictureEntity>> =
+        loremPictureDao.getAllLoremPictures()
 
-    override fun getLoremPicture(id: Int): Flow<LoremPictureEntity?> = loremPictureDao.getLoremPicture(id)
+    override fun getLoremPicture(id: String): Flow<LoremPictureEntity?> =
+        loremPictureDao.getLoremPicture(id)
 }

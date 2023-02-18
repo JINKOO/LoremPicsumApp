@@ -10,5 +10,5 @@ interface LoremPictureLocalSource {
 
     fun getAllPictures(): Flow<List<LoremPictureEntity>>
 
-    fun getLoremPicture(id: Int): Flow<LoremPictureEntity?>
+    fun getLoremPicture(id: String): Flow<LoremPictureEntity?>
 }

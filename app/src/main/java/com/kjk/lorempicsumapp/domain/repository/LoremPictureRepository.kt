@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoremPictureRepository {
     suspend fun getLoremPictureListFromRemote(): List<LoremPicture>
-    suspend fun getLoremPictureDetail(loremPictureId: String): LoremPicture?
+    fun getLoremPictureDetailFromLocal(loremPictureId: String): Flow<LoremPicture?>
     fun getLoremPictureListFromLocal(): Flow<List<LoremPicture>>
 }

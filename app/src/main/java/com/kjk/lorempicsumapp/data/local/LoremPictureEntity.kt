@@ -2,6 +2,7 @@ package com.kjk.lorempicsumapp.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kjk.lorempicsumapp.data.network.entity.LoremPictureApiModel
 
 @Entity(tableName = "lorem_picture")
 data class LoremPictureEntity(
@@ -12,4 +13,17 @@ data class LoremPictureEntity(
     val height: String,
     val url: String,
     val downloadUrl: String
-) 
+) {
+    companion object {
+        operator fun invoke(loremPictureApiModel: LoremPictureApiModel): LoremPictureEntity {
+            return LoremPictureEntity(
+                loremPictureApiModel.id,
+                loremPictureApiModel.author,
+                loremPictureApiModel.width,
+                loremPictureApiModel.height,
+                loremPictureApiModel.downloadUrl,
+                loremPictureApiModel.url
+            )
+        }
+    }
+}

@@ -28,7 +28,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -41,7 +40,7 @@ fun HomeScreen(
 
     Column {
         Button(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth(),
             onClick = {
                 viewModel.fetchPictureList()
@@ -104,12 +103,11 @@ fun LoremPictureItem(
     navigateToDetail: () -> Unit
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .size(200.dp)
             .clickable { navigateToDetail() },
         elevation = 4.dp
     ) {
-        // TODO Coil라이브러리로 변경 완료
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(loremPicture.downloadUrl)

@@ -16,7 +16,7 @@ interface LoremPictureDao {
     fun getAllLoremPictures(): Flow<List<LoremPictureEntity>>
 
     @Query("SELECT * FROM lorem_picture WHERE id = :id")
-    fun getLoremPicture(id: Int): Flow<LoremPictureEntity?>
+    fun getLoremPicture(id: String): Flow<LoremPictureEntity?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLoremPicture(loremPictureEntity: LoremPictureEntity)

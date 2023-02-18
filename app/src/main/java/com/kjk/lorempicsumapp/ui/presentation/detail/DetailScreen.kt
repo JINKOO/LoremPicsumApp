@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kjk.lorempicsumapp.R
@@ -32,14 +33,10 @@ import timber.log.Timber
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel
+    viewModel: DetailViewModel = hiltViewModel()
 ) {
 
     val detailUiState by viewModel.detailUiState.collectAsState()
-    val currLoremPicture = detailUiState.currLoremPicture
-    val prevLoremPicture = detailUiState.prevLoremPicture
-    val nextLoremPicture = detailUiState.nextLoremPicture
-
     Timber.d("detailUiState :: $detailUiState")
 
     Column(
@@ -53,24 +50,26 @@ fun DetailScreen(
                 .height(300.dp),
             elevation = 4.dp
         ) {
-            ImageThumbNails(pictureUrl = currLoremPicture?.downloadUrl)
+            ImageThumbNails(pictureUrl = detailUiState.currLoremPicture.downloadUrl)
         }
 
-        if (currLoremPicture != null) {
-            PictureInfo(loremPicture = currLoremPicture)
-        }
+        PictureInfo(loremPicture = detailUiState.currLoremPicture)
         TwoButtons(
             // TODO 질문 :: 각각 다른 Composable을 호출 할 때, uiState를 넘겨줘도 되나? JetNews등의 코드에서는 허용함.
 //            detailUiState = detailUiState,
             onLeftIconClicked = {
-                prevLoremPicture?.let {
-                    viewModel.fetchLoremPicture(it.id)
-                }
+                viewModel.event(
+                    DetailPictureViewModelEvent.RefreshCurrentPicture(
+                        detailUiState.currLoremPicture.id.toInt().minus(1).toString()
+                    )
+                )
             },
             onRightIconClicked = {
-                nextLoremPicture?.let {
-                    viewModel.fetchLoremPicture(it.id)
-                }
+                viewModel.event(
+                    DetailPictureViewModelEvent.RefreshCurrentPicture(
+                        detailUiState.currLoremPicture.id.toInt().plus(1).toString()
+                    )
+                )
             }
         )
         Row(
@@ -79,19 +78,19 @@ fun DetailScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             ImageThumbNails(
-                pictureUrl = prevLoremPicture?.downloadUrl,
+                pictureUrl = detailUiState.prevLoremPicture.downloadUrl,
                 width = 70,
                 height = 50
             )
             Spacer(modifier = Modifier.width(30.dp))
             ImageThumbNails(
-                pictureUrl = currLoremPicture?.downloadUrl,
+                pictureUrl = detailUiState.currLoremPicture.downloadUrl,
                 width = 70,
                 height = 50
             )
             Spacer(modifier = Modifier.width(30.dp))
             ImageThumbNails(
-                pictureUrl = nextLoremPicture?.downloadUrl,
+                pictureUrl = detailUiState.nextLoremPicture.downloadUrl,
                 width = 70,
                 height = 50
             )
@@ -132,7 +131,7 @@ fun TwoButtons(
     onRightIconClicked: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -141,9 +140,8 @@ fun TwoButtons(
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(
-                onClick = {
-                    onLeftIconClicked()
-                }) {
+                onClick = { onLeftIconClicked() })
+            {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_arrow_left_24),
                     contentDescription = null

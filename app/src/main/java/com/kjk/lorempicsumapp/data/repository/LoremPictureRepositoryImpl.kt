@@ -20,18 +20,14 @@ class LoremPictureRepositoryImpl @Inject constructor(
             .fold(
                 onSuccess =
                 {
+                    // TODO network로 부터 받아온 정보를 room에 insert. 이방식이 맞는 지?
                     loremPictureLocalSource.insertAll(
                         it.map { loremPictureApiModel ->
-                            LoremPictureEntity(
-                                id = loremPictureApiModel.id,
-                                author = loremPictureApiModel.author,
-                                width = loremPictureApiModel.width,
-                                height = loremPictureApiModel.height,
-                                url = loremPictureApiModel.url,
-                                downloadUrl = loremPictureApiModel.downloadUrl
-                            )
+                            LoremPictureEntity(loremPictureApiModel)
                         }
                     )
+                    // TODO 이 부분은 필요 없는 것일까? Network로 부터 받아온 정보를 어짜피 room에 저장하고,
+                    //  UI나, UseCase에서는 room에있는 data를 읽어오면 되니까??
                     it.map { loremPictureApiModel ->
                         LoremPicture(loremPictureApiModel)
                     }
@@ -51,18 +47,11 @@ class LoremPictureRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getLoremPictureDetail(
-        loremPictureId: String
-    ): LoremPicture? {
-        return loremPictureRemoteSource.getLoremPictureDetail(loremPictureId)
-            .fold(
-                onSuccess = { loremPictureApiModel ->
-                    LoremPicture(loremPictureApiModel)
-                },
-                onFailure = {
-                    Timber.w("ERROR :: ${it.message}")
-                    null
-                }
-            )
+    override fun getLoremPictureDetailFromLocal(loremPictureId: String): Flow<LoremPicture?> {
+        return loremPictureLocalSource.getLoremPicture(loremPictureId).map { loremPictureEntity ->
+            loremPictureEntity?.let {
+                LoremPicture(it)
+            }
+        }
     }
 }
