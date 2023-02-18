@@ -78,6 +78,7 @@ android {
 dependencies {
 
     def room_version = "2.5.0"
+    def paging_version = "3.1.1"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
@@ -110,9 +111,6 @@ dependencies {
     // GSON
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    // Glide
-    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
-
     // compose viewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
 
@@ -123,4 +121,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+
+//    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha16")
 }

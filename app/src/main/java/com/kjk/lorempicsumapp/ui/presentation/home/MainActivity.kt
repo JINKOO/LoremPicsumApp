@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -18,18 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.kjk.lorempicsumapp.R
-import com.kjk.lorempicsumapp.ui.presentation.detail.DetailScreen
-import com.kjk.lorempicsumapp.ui.presentation.detail.DetailViewModel
-import com.kjk.lorempicsumapp.ui.presentation.navigation.LoremPictureDestinations
 import com.kjk.lorempicsumapp.ui.theme.LoremPicsumAppTheme
+import com.kjk.lorempicsumapp.ui.theme.navigation.MainNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -94,40 +86,13 @@ fun LoremPictureApp(
             LoremPictureAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = {
-                    navController.navigateUp()
-                }
+                navigateUp = { navController.navigateUp() }
             )
+        },
+        bottomBar = {
+
         }
-    ) { innerPaddings ->
-
-        NavHost(
-            navController = navController,
-            startDestination = LoremPictureDestinations.Home.route,
-            modifier = modifier.padding(innerPaddings)
-        ) {
-
-            composable(route = LoremPictureDestinations.Home.route) {
-                val viewModel = hiltViewModel<HomeViewModel>()
-                HomeScreen(
-                    viewModel = viewModel,
-                    navigateToDetail = { pictureId ->
-                        navController.navigate("${LoremPictureDestinations.Detail.route}/$pictureId")
-                    }
-                )
-            }
-
-            composable(
-                route = "${LoremPictureDestinations.Detail.route}/{pictureId}",
-                arguments = listOf(
-                    navArgument("pictureId") { type = NavType.StringType }
-                )
-            ) {
-                val viewModel = hiltViewModel<DetailViewModel>()
-                DetailScreen(
-                    viewModel = viewModel
-                )
-            }
-        }
+    ) {
+        MainNavHost(navController = navController)
     }
 }

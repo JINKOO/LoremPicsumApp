@@ -9,8 +9,11 @@ class LoremPictureRemoteSourceImpl @Inject constructor(
     @LoremPictureApi private val loremApi: LoremApi
 ) : LoremPictureRemoteSource {
 
-    override suspend fun getLoremPictureList(): Result<List<LoremPictureApiModel>> = runCatching {
-        loremApi.getLoremPictureList()
+    override suspend fun getLoremPictureList(
+        page: Int,
+        pageSize: Int
+    ): Result<List<LoremPictureApiModel>> = runCatching {
+        loremApi.getLoremPictureList(page, pageSize)
     }
 
     override suspend fun getLoremPictureDetail(

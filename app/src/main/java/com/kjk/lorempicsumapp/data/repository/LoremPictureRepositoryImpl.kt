@@ -15,8 +15,11 @@ class LoremPictureRepositoryImpl @Inject constructor(
     private val loremPictureLocalSource: LoremPictureLocalSource
 ) : LoremPictureRepository {
 
-    override suspend fun getLoremPictureListFromRemote(): List<LoremPicture> =
-        loremPictureRemoteSource.getLoremPictureList()
+    override suspend fun getLoremPictureListFromRemote(
+        page: Int,
+        pageSize: Int
+    ): List<LoremPicture> =
+        loremPictureRemoteSource.getLoremPictureList(page, pageSize)
             .fold(
                 onSuccess =
                 {

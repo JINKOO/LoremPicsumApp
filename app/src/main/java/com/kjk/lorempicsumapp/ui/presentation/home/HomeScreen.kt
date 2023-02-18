@@ -3,20 +3,18 @@ package com.kjk.lorempicsumapp.ui.presentation.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,10 +22,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
+import com.kjk.lorempicsumapp.ui.presentation.common.CommonProgressBar
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -36,48 +39,41 @@ fun HomeScreen(
     navigateToDetail: (String) -> Unit
 ) {
     val uiEvent by viewModel.homeUiState.collectAsState()
-    val pictureList = uiEvent.pictureList
+    val pagingList = viewModel.pagingFlow.collectAsLazyPagingItems()
+
+    Timber.d("PagingList :: ${pagingList.loadState}")
 
     Column {
-        Button(
-            modifier = modifier
-                .fillMaxWidth(),
-            onClick = {
-                viewModel.fetchPictureList()
+        if (!uiEvent.isFetchComplete) {
+            Button(
+                modifier = modifier
+                    .fillMaxWidth(),
+                onClick = {
+                    /*viewModel.fetchPictureList()*/
+                }
+            ) {
+                Text(text = stringResource(R.string.fetch_list_btn_label))
             }
-        ) {
-            Text(text = stringResource(R.string.fetch_list_btn_label))
         }
 
         LoremPictureList(
-            pictureList = pictureList,
-            navigateToDetail = navigateToDetail
+            navigateToDetail = navigateToDetail,
+            pagingList = pagingList
         )
-    }
-}
 
-@Composable
-fun CommonErrorText(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = stringResource(R.string.empty_picture_list_message))
+        if (uiEvent.isLoading) {
+            CommonProgressBar()
+        }
     }
 }
 
 @Composable
 fun LoremPictureList(
     modifier: Modifier = Modifier,
-    pictureList: List<LoremPicture>,
-    viewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetail: (String) -> Unit
+    navigateToDetail: (String) -> Unit,
+    pagingList: LazyPagingItems<LoremPicture>
 ) {
+
     LazyVerticalGrid(
         modifier = modifier
             .padding(8.dp),
@@ -85,13 +81,42 @@ fun LoremPictureList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(pictureList, key = { picture -> picture.id }) { loremPicture ->
+        when (val state = pagingList.loadState.prepend) {
+            is LoadState.NotLoading -> Unit
+            is LoadState.Loading -> {
+                Loading()
+            }
+            is LoadState.Error -> {
+                state.error.message?.let { ErrorText(message = it) }
+            }
+        }
+
+        when (val state = pagingList.loadState.refresh) {
+            is LoadState.NotLoading -> Unit
+            is LoadState.Loading -> {
+                Loading()
+            }
+            is LoadState.Error -> {
+                state.error.message?.let { ErrorText(message = it) }
+            }
+        }
+        items(
+            count = pagingList.itemCount
+        ) { index ->
+            val loremPicture = pagingList[index] ?: return@items
             LoremPictureItem(
                 loremPicture = loremPicture,
-                navigateToDetail = {
-                    navigateToDetail(loremPicture.id)
-                }
+                navigateToDetail = { navigateToDetail(loremPicture.id) }
             )
+        }
+        when (val state = pagingList.loadState.append) {
+            is LoadState.NotLoading -> Unit
+            is LoadState.Loading -> {
+                Loading()
+            }
+            is LoadState.Error -> {
+                state.error.message?.let { ErrorText(message = it) }
+            }
         }
     }
 }
@@ -117,6 +142,22 @@ fun LoremPictureItem(
             error = painterResource(id = R.drawable.ic_broken_image),
             contentScale = ContentScale.Crop,
             contentDescription = null,
+        )
+    }
+}
+
+private fun LazyGridScope.Loading() {
+    item {
+        CommonProgressBar()
+    }
+}
+
+private fun LazyGridScope.ErrorText(
+    message: String
+) {
+    item {
+        Text(
+            text = message
         )
     }
 }

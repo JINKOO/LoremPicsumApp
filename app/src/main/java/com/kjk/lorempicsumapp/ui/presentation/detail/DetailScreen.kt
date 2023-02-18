@@ -106,7 +106,7 @@ fun ImageThumbNails(
     width: Int = 250
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(width.dp)
             .height(height.dp),
         elevation = 4.dp
