@@ -28,6 +28,7 @@ import androidx.navigation.navArgument
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.ui.presentation.detail.DetailScreen
 import com.kjk.lorempicsumapp.ui.presentation.detail.DetailViewModel
+import com.kjk.lorempicsumapp.ui.presentation.navigation.LoremPictureDestinations
 import com.kjk.lorempicsumapp.ui.theme.LoremPicsumAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -86,7 +87,6 @@ fun LoremPictureApp(
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-
     val currentScreen = backStackEntry?.destination?.route ?: "home"
 
     Scaffold(
@@ -100,24 +100,25 @@ fun LoremPictureApp(
             )
         }
     ) { innerPaddings ->
+
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = LoremPictureDestinations.Home.route,
             modifier = modifier.padding(innerPaddings)
         ) {
 
-            composable(route = "home") {
+            composable(route = LoremPictureDestinations.Home.route) {
                 val viewModel = hiltViewModel<HomeViewModel>()
                 HomeScreen(
                     viewModel = viewModel,
                     navigateToDetail = { pictureId ->
-                        navController.navigate("detail/$pictureId")
+                        navController.navigate("${LoremPictureDestinations.Detail.route}/$pictureId")
                     }
                 )
             }
 
             composable(
-                route = "detail/{pictureId}",
+                route = "${LoremPictureDestinations.Detail.route}/{pictureId}",
                 arguments = listOf(
                     navArgument("pictureId") { type = NavType.StringType }
                 )

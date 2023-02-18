@@ -28,7 +28,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kjk.lorempicsumapp.R
 import com.kjk.lorempicsumapp.domain.entity.LoremPicture
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -36,16 +35,12 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetail: (String) -> Unit
 ) {
-    // TODO 이벤트 전달 방식이 아닌, uiEvent를 oberve해서 recomposition이 일어아도록 변경
     val uiEvent by viewModel.homeUiState.collectAsState()
-    Timber.d("uiEvent :: ${uiEvent}")
-
-    // TODO 0번 :: ListUpdate 방식 변경
     val pictureList = uiEvent.pictureList
 
     Column {
         Button(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth(),
             onClick = {
                 viewModel.fetchPictureList()
@@ -54,14 +49,10 @@ fun HomeScreen(
             Text(text = stringResource(R.string.fetch_list_btn_label))
         }
 
-        if (pictureList.isNotEmpty()) {
-            LoremPictureList(
-                pictureList = pictureList,
-                navigateToDetail = navigateToDetail,
-            )
-        } else {
-            CommonErrorText()
-        }
+        LoremPictureList(
+            pictureList = pictureList,
+            navigateToDetail = navigateToDetail
+        )
     }
 }
 
@@ -112,12 +103,11 @@ fun LoremPictureItem(
     navigateToDetail: () -> Unit
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .size(200.dp)
             .clickable { navigateToDetail() },
         elevation = 4.dp
     ) {
-        // TODO Coil라이브러리로 변경 완료
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(loremPicture.downloadUrl)

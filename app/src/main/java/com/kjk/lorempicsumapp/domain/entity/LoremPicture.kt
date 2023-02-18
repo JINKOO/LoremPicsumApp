@@ -1,5 +1,6 @@
 package com.kjk.lorempicsumapp.domain.entity
 
+import com.kjk.lorempicsumapp.data.local.LoremPictureEntity
 import com.kjk.lorempicsumapp.data.network.entity.LoremPictureApiModel
 
 /**
@@ -24,6 +25,17 @@ data class LoremPicture(
                 loremPictureResponse.height,
                 loremPictureResponse.url,
                 loremPictureResponse.downloadUrl
+            )
+        }
+
+        operator fun invoke(loremPictureEntity: LoremPictureEntity): LoremPicture {
+            return LoremPicture(
+                loremPictureEntity.id,
+                loremPictureEntity.author,
+                loremPictureEntity.width,
+                loremPictureEntity.height,
+                loremPictureEntity.url,
+                loremPictureEntity.downloadUrl
             )
         }
     }

@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoremPictureUseCase {
     fun getLoremPictureList(): Flow<List<LoremPicture>>
-    fun getLoremPictureDetail(loremPictureId: String): Flow<List<LoremPicture?>>
+    fun getLoremPictureDetail(loremPictureId: String): Flow<LoremPicture?>
 }
