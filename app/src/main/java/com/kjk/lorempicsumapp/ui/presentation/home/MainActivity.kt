@@ -77,6 +77,8 @@ fun LoremPictureAppBar(
 fun LoremPictureApp(
     modifier: Modifier = Modifier
 ) {
+    // TODO 질문 :: navController는 같은 instance인가?
+    //  동작원리..? navHost를 정의하면 미리 navigation 그래프를 만들고, navigate할때마다 recomposition?
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = backStackEntry?.destination?.route ?: "home"
@@ -90,7 +92,8 @@ fun LoremPictureApp(
             )
         },
         bottomBar = {
-
+            // TODO 중첩 그래프 사용 아직은 무리인가? Nested Compose Navigation vs Fragment Navigation
+            //  특정 화면에 따라, topBar 혹은 bottomBar를 숨겨야 할때 (여러 진입점이 있을 수 있음)
         }
     ) {
         MainNavHost(navController = navController)

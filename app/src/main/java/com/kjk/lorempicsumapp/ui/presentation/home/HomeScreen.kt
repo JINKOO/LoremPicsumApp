@@ -49,6 +49,7 @@ fun HomeScreen(
                 modifier = modifier
                     .fillMaxWidth(),
                 onClick = {
+                    // TODO 질문 paging을 사용하면, fetch 버튼을 클릭할 때 말고, 바로 flow를 가져옴
                     /*viewModel.fetchPictureList()*/
                 }
             ) {

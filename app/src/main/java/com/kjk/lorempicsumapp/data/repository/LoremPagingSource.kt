@@ -9,6 +9,8 @@ import javax.inject.Inject
 class LoremPagingSource @Inject constructor(
     private val loremPictureRepository: LoremPictureRepository
 ) : PagingSource<Int, LoremPicture>() {
+
+    // TODO 질문 ::  getRefreshKey의 동작원리??
     override fun getRefreshKey(state: PagingState<Int, LoremPicture>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -21,7 +23,7 @@ class LoremPagingSource @Inject constructor(
             val nextPageNumber = params.key ?: 1
             val response = loremPictureRepository.getLoremPictureListFromRemote(
                 page = nextPageNumber,
-                // TODO 질문 왜 처음 laod될때는 사이즈가 *3 인가
+                // TODO 질문 :: 왜 처음 laod될때는 사이즈가 *3 인가
                 pageSize = params.loadSize
             )
             LoadResult.Page(

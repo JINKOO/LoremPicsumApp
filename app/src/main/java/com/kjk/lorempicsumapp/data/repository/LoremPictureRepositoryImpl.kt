@@ -23,13 +23,13 @@ class LoremPictureRepositoryImpl @Inject constructor(
             .fold(
                 onSuccess =
                 {
-                    // TODO network로 부터 받아온 정보를 room에 insert. 이방식이 맞는 지?
+                    // TODO 질문 :: network로 부터 받아온 정보를 room에 insert. 이방식이 맞는 지?
                     loremPictureLocalSource.insertAll(
                         it.map { loremPictureApiModel ->
                             LoremPictureEntity(loremPictureApiModel)
                         }
                     )
-                    // TODO 이 부분은 필요 없는 것일까? Network로 부터 받아온 정보를 어짜피 room에 저장하고,
+                    // TODO 질문 :: 이 부분은 필요 없는 것일까? Network로 부터 받아온 정보를 어짜피 room에 저장하고,
                     //  UI나, UseCase에서는 room에있는 data를 읽어오면 되니까??
                     it.map { loremPictureApiModel ->
                         LoremPicture(loremPictureApiModel)

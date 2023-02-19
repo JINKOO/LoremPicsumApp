@@ -34,6 +34,8 @@ fun MainNavHost(
             )
         }
 
+        // TODO compose navigation에서는 argument로 id값 등의 간단한 타입만 전달하도록 권장하는데,
+        //  객체 전달은 무리인가
         composable(
             route = "${LoremPictureDestinations.Detail.route}/{$PICTURE_ID_ARG}",
             arguments = listOf(
